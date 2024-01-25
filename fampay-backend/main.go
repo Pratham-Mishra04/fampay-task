@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/Pratham-Mishra04/fampay/fampay-backend/config"
+	"github.com/Pratham-Mishra04/fampay/fampay-backend/helpers"
 	"github.com/Pratham-Mishra04/fampay/fampay-backend/initializers"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/helmet"
@@ -15,6 +16,7 @@ func init() {
 	initializers.AutoMigrate()
 
 	config.AddLogger()
+	helpers.InitializeYoutubeService()
 }
 
 func main() {
