@@ -11,6 +11,6 @@ func CORS() fiber.Handler {
 		AllowOrigins:     initializers.CONFIG.FRONTEND_URL,
 		AllowHeaders:     "Origin, Content-Type, Accept, Authorization",
 		AllowMethods:     "GET, POST, PATCH, DELETE",
-		AllowCredentials: true,
+		AllowCredentials: false,
 	})
 }

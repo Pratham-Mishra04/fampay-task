@@ -1,6 +1,9 @@
 package controllers
 
 import (
+	"crypto/sha256"
+	"fmt"
+	"strings"
 	"time"
 
 	"github.com/Pratham-Mishra04/fampay/fampay-backend/config"
@@ -64,10 +67,23 @@ func FetchLatestVideos() {
 
 	if err := tx.Commit().Error; err != nil {
 		go config.Logger.Errorw("Error while committing a transaction", "Message", err.Error(), "Path", "FetchLatestVideos", "Error", err.Error)
+	} else {
+		go helpers.FlushCache()
 	}
 }
 
 func GetVideos(c *fiber.Ctx) error {
+	searchHash := getHashFromSearches(c)
+
+	videosInCache := helpers.GetFromCache(searchHash)
+	if videosInCache != nil {
+		return c.Status(200).JSON(fiber.Map{
+			"status":  "success",
+			"message": "Videos fetched",
+			"videos":  videosInCache,
+		})
+	}
+
 	paginatedDB := utils.Paginator(c)(initializers.DB)
 	searchedDB := utils.Search(c)(paginatedDB)
 
@@ -79,9 +95,28 @@ func GetVideos(c *fiber.Ctx) error {
 		return &fiber.Error{Code: 500, Message: config.SERVER_ERROR}
 	}
 
+	go helpers.SetToCache(searchHash, videos)
+
 	return c.Status(200).JSON(fiber.Map{
 		"status":  "success",
 		"message": "Videos fetched",
 		"videos":  videos,
 	})
+}
+
+func getHashFromSearches(c *fiber.Ctx) string {
+	fields := []string{"title", "channel_title", "start", "end", "page", "limit"}
+	var values []string
+
+	for _, field := range fields {
+		values = append(values, c.Query(field, ""))
+	}
+
+	combinedString := strings.Join(values, ",")
+
+	hash := sha256.New()
+	hash.Write([]byte(combinedString))
+	hashValue := fmt.Sprintf("%x", hash.Sum(nil))
+
+	return hashValue
 }
