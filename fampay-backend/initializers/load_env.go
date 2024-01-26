@@ -16,18 +16,20 @@ const (
 )
 
 type Config struct {
-	PORT            string      `mapstructure:"PORT"`
-	ENV             Environment `mapstructure:"ENV"`
-	DB_HOST         string      `mapstructure:"DB_HOST"`
-	DB_PORT         string      `mapstructure:"DB_PORT"`
-	DB_NAME         string      `mapstructure:"DB_NAME"`
-	DB_USER         string      `mapstructure:"DB_USER"`
-	DB_PASSWORD     string      `mapstructure:"DB_PASSWORD"`
-	REDIS_HOST      string      `mapstructure:"REDIS_HOST"`
-	REDIS_PORT      string      `mapstructure:"REDIS_PORT"`
-	REDIS_PASSWORD  string      `mapstructure:"REDIS_PASSWORD"`
-	FRONTEND_URL    string      `mapstructure:"FRONTEND_URL"`
-	YOUTUBE_API_KEY string      `mapstructure:"YOUTUBE_API_KEY"`
+	PORT                string      `mapstructure:"PORT"`
+	ENV                 Environment `mapstructure:"ENV"`
+	DB_HOST             string      `mapstructure:"DB_HOST"`
+	DB_PORT             string      `mapstructure:"DB_PORT"`
+	DB_NAME             string      `mapstructure:"DB_NAME"`
+	DB_USER             string      `mapstructure:"DB_USER"`
+	DB_PASSWORD         string      `mapstructure:"DB_PASSWORD"`
+	REDIS_HOST          string      `mapstructure:"REDIS_HOST"`
+	REDIS_PORT          string      `mapstructure:"REDIS_PORT"`
+	REDIS_PASSWORD      string      `mapstructure:"REDIS_PASSWORD"`
+	BACKEND_URL         string      `mapstructure:"BACKEND_URL"`
+	FRONTEND_URL        string      `mapstructure:"FRONTEND_URL"`
+	OAUTH_CLIENT_ID     string      `mapstructure:"OAUTH_CLIENT_ID"`
+	OAUTH_CLIENT_SECRET string      `mapstructure:"OAUTH_CLIENT_SECRET"`
 }
 
 var CONFIG Config
