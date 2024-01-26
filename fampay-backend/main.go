@@ -2,9 +2,11 @@ package main
 
 import (
 	"github.com/Pratham-Mishra04/fampay/fampay-backend/config"
+	"github.com/Pratham-Mishra04/fampay/fampay-backend/controllers"
 	"github.com/Pratham-Mishra04/fampay/fampay-backend/helpers"
 	"github.com/Pratham-Mishra04/fampay/fampay-backend/initializers"
 	"github.com/Pratham-Mishra04/fampay/fampay-backend/routers"
+	"github.com/Pratham-Mishra04/fampay/fampay-backend/utils"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/helmet"
 	"github.com/gofiber/fiber/v2/middleware/logger"
@@ -18,6 +20,8 @@ func init() {
 
 	config.AddLogger()
 	helpers.InitializeService()
+
+	utils.Repeater(controllers.FetchLatestVideos, config.RepeaterDelay)
 }
 
 func main() {

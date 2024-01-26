@@ -6,5 +6,5 @@ import (
 )
 
 func VideoRouter(app *fiber.App) {
-	app.Get("/", controllers.FetchLatestVideos)
+	app.Get("/", controllers.GetVideos)
 }

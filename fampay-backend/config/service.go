@@ -8,4 +8,6 @@ import (
 var (
 	OAuthScopes      = []string{youtube.YoutubeForceSslScope}
 	OAuthRedirectURI = initializers.CONFIG.BACKEND_URL + "/oauth2callback"
+	ServiceQuery     = "cricket"
+	RepeaterDelay    = 30 //in seconds
 )

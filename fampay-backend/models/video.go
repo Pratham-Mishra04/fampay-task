@@ -2,14 +2,14 @@ package models
 
 import (
 	"time"
-
-	"github.com/lib/pq"
 )
 
 type Video struct {
-	ID          int            `gorm:"autoIncrement;primaryKey" json:"id"`
-	Title       string         `json:"title"`
-	Description string         `json:"description"`
-	Thumbnails  pq.StringArray `gorm:"type:text[]" json:"thumbnails"`
-	UploadedAt  time.Time      `gorm:"index:idx_uploaded_at" json:"uploadedAt"`
+	ID           int       `gorm:"autoIncrement;primaryKey" json:"id"`
+	Title        string    `json:"title"`
+	ChannelID    string    `json:"channelID"`
+	ChannelTitle string    `json:"channelTitle"`
+	Description  string    `json:"description"`
+	Thumbnail    string    `json:"thumbnail"`
+	UploadedAt   time.Time `gorm:"index:idx_uploaded_at" json:"uploadedAt"`
 }
