@@ -1,10 +1,13 @@
 package initializers
 
 import (
+	"bufio"
 	"fmt"
 	"log"
+	"os"
 	"reflect"
 
+	"github.com/lib/pq"
 	"github.com/spf13/viper"
 )
 
@@ -16,19 +19,20 @@ const (
 )
 
 type Config struct {
-	PORT            string      `mapstructure:"PORT"`
-	ENV             Environment `mapstructure:"ENV"`
-	DB_HOST         string      `mapstructure:"DB_HOST"`
-	DB_PORT         string      `mapstructure:"DB_PORT"`
-	DB_NAME         string      `mapstructure:"DB_NAME"`
-	DB_USER         string      `mapstructure:"DB_USER"`
-	DB_PASSWORD     string      `mapstructure:"DB_PASSWORD"`
-	REDIS_HOST      string      `mapstructure:"REDIS_HOST"`
-	REDIS_PORT      string      `mapstructure:"REDIS_PORT"`
-	REDIS_PASSWORD  string      `mapstructure:"REDIS_PASSWORD"`
-	BACKEND_URL     string      `mapstructure:"BACKEND_URL"`
-	FRONTEND_URL    string      `mapstructure:"FRONTEND_URL"`
-	YOUTUBE_API_KEY string      `mapstructure:"YOUTUBE_API_KEY"`
+	PORT                      string         `mapstructure:"PORT"`
+	ENV                       Environment    `mapstructure:"ENV"`
+	DB_HOST                   string         `mapstructure:"DB_HOST"`
+	DB_PORT                   string         `mapstructure:"DB_PORT"`
+	DB_NAME                   string         `mapstructure:"DB_NAME"`
+	DB_USER                   string         `mapstructure:"DB_USER"`
+	DB_PASSWORD               string         `mapstructure:"DB_PASSWORD"`
+	REDIS_HOST                string         `mapstructure:"REDIS_HOST"`
+	REDIS_PORT                string         `mapstructure:"REDIS_PORT"`
+	REDIS_PASSWORD            string         `mapstructure:"REDIS_PASSWORD"`
+	BACKEND_URL               string         `mapstructure:"BACKEND_URL"`
+	FRONTEND_URL              string         `mapstructure:"FRONTEND_URL"`
+	YOUTUBE_API_KEYS_LOCATION string         `mapstructure:"YOUTUBE_API_KEYS_LOCATION"`
+	YOUTUBE_API_KEYS          pq.StringArray `mapstructure:"YOUTUBE_API_KEYS"`
 }
 
 var CONFIG Config
@@ -56,6 +60,18 @@ func LoadEnv() {
 
 	if CONFIG.ENV != DevelopmentEnv && CONFIG.ENV != ProductionEnv {
 		err := fmt.Errorf("invalid ENV value: %s", CONFIG.ENV)
+		log.Fatal(err)
+	}
+
+	CONFIG.YOUTUBE_API_KEYS, err = loadAPIKeysFromFile(CONFIG.YOUTUBE_API_KEYS_LOCATION)
+
+	if err != nil {
+		err := fmt.Errorf("environment variable %s not found: %e", "YOUTUBE_API_KEYS", err)
+		log.Fatal(err)
+	}
+
+	if len(CONFIG.YOUTUBE_API_KEYS) == 0 {
+		err := fmt.Errorf("file %s is empty", CONFIG.YOUTUBE_API_KEYS_LOCATION)
 		log.Fatal(err)
 	}
 }
@@ -87,4 +103,25 @@ func checkMissingKeys(requiredKeys []string, config Config) []string {
 	}
 
 	return missingKeys
+}
+
+func loadAPIKeysFromFile(filename string) (pq.StringArray, error) {
+	file, err := os.Open(filename)
+	if err != nil {
+		return nil, err
+	}
+	defer file.Close()
+
+	scanner := bufio.NewScanner(file)
+
+	var apiKeys pq.StringArray
+	for scanner.Scan() {
+		apiKeys = append(apiKeys, scanner.Text())
+	}
+
+	if err := scanner.Err(); err != nil {
+		return nil, err
+	}
+
+	return apiKeys, nil
 }
