@@ -11,6 +11,7 @@ import { SlidersHorizontal, Trash } from '@phosphor-icons/react';
 import Filters from '@/components/filters';
 import { useRouter } from 'next/router';
 import moment from 'moment';
+import VideoCard from '@/components/video_card';
 
 const buildURL = (baseUrl: string, params: object) => {
   const queryString = Object.entries(params)
@@ -40,7 +41,7 @@ const Home = () => {
   const [search, setSearch] = useState('');
 
   const fetchVideos = async (pageIndex: number) => {
-    const URL = buildURL(`${process.env.NEXT_PUBLIC_BACKEND_URL}?page=${pageIndex}&limit=${10}`, router.query);
+    const URL = buildURL(`${process.env.NEXT_PUBLIC_BACKEND_URL}?page=${pageIndex}&limit=${20}`, router.query);
     const res = await getHandler(URL);
     if (res.statusCode == 200) {
       if (pageIndex == 1) {
@@ -90,14 +91,14 @@ const Home = () => {
         <Loader />
       ) : (
         <InfiniteScroll
-          className="w-full max-md:w-full max-md:px-4 mx-auto flex flex-col items-center gap-2"
+          className="w-full px-16 flex flex-wrap justify-center gap-4"
           dataLength={videos.length}
           next={() => fetchVideos(page)}
           hasMore={hasMore}
           loader={<Loader />}
         >
           {videos.map(video => {
-            return <div key={video.id}>{video.title}</div>;
+            return <VideoCard key={video.id} video={video} />;
           })}
         </InfiniteScroll>
       )}

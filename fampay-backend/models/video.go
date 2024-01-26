@@ -6,6 +6,7 @@ import (
 
 type Video struct {
 	ID           int       `gorm:"autoIncrement;primaryKey" json:"id"`
+	YoutubeID    string    `default:"" json:"youtubeID"`
 	Title        string    `json:"title"`
 	ChannelID    string    `json:"channelID"`
 	ChannelTitle string    `json:"channelTitle"`

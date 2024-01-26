@@ -1,5 +1,6 @@
 export interface Video {
-  id: string;
+  id: number;
+  youtubeID: string;
   title: string;
   channelID: string;
   channelTitle: string;

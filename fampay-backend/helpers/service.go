@@ -30,9 +30,10 @@ func InitializeService() {
 }
 
 func rotateAPIKey() {
-	if currentIndex == len(apiKeys)-1 {
-		log.Fatal("All KEYS have been exhausted!")
-	}
+	//* Optional, can have infinite rotation
+	// if currentIndex == len(apiKeys)-1 {
+	// 	log.Fatal("All KEYS have been exhausted!")
+	// }
 
 	currentIndex = (currentIndex + 1) % len(apiKeys)
 	log.Printf("\nSwitched to API key %d.", currentIndex+1)

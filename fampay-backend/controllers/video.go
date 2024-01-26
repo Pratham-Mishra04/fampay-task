@@ -50,7 +50,8 @@ func FetchLatestVideos() {
 			ChannelID:    item.Snippet.ChannelId,
 			ChannelTitle: item.Snippet.ChannelTitle,
 			Description:  item.Snippet.Description,
-			Thumbnail:    item.Snippet.Thumbnails.Default.Url,
+			YoutubeID:    item.Id.VideoId,
+			Thumbnail:    item.Snippet.Thumbnails.High.Url,
 		}
 
 		// Parse the time string

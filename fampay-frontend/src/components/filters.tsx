@@ -13,6 +13,7 @@ const Filters = ({ setShow }: Props) => {
 
   const [start, setStart] = useState(router.query.start || '');
   const [end, setEnd] = useState(router.query.end || '');
+  const [channelTitle, setChannelTitle] = useState(router.query.channel_title || '');
 
   useEffect(() => {
     document.documentElement.style.overflowY = 'hidden';
@@ -34,13 +35,10 @@ const Filters = ({ setShow }: Props) => {
     router.push(router);
   }, [end]);
 
-  const renderSelectOptions = (options: string[]) => {
-    return options.map((option, index) => (
-      <option key={index} value={option}>
-        {option}
-      </option>
-    ));
-  };
+  useEffect(() => {
+    router.query.channel_title = channelTitle;
+    router.push(router);
+  }, [channelTitle]);
 
   return (
     <>
@@ -61,6 +59,16 @@ const Filters = ({ setShow }: Props) => {
         </div>
 
         <div className="w-full flex flex-col gap-4">
+          <div className="w-full h-12 px-4 text-primary_black bg-gray-100 rounded-md border-gray-200 border-2 transition-ease-200">
+            <input
+              className="w-full h-full bg-transparent focus:outline-none font-primary font-medium"
+              type="text"
+              placeholder="Search by Channel Name"
+              value={channelTitle}
+              onChange={el => setChannelTitle(el.target.value)}
+            />
+          </div>
+
           <div className="w-full flex gap-2">
             <div> Start Time:</div>
             <input type="datetime-local" value={start} onChange={el => setStart(el.target.value)} />
@@ -73,7 +81,7 @@ const Filters = ({ setShow }: Props) => {
       </div>
       <div
         onClick={() => setShow(false)}
-        className="bg-backdrop w-screen h-screen fixed top-0 left-0 animate-fade_third z-30 max-lg:z-[51]"
+        className="bg-backdrop backdrop-blur-sm w-screen h-screen fixed top-0 left-0 animate-fade_third z-30 max-lg:z-[51]"
       ></div>
     </>
   );
