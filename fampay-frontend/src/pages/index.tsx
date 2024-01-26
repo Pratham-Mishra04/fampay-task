@@ -74,7 +74,7 @@ const Home = () => {
     <>
       {clickedOnFilters ? <Filters setShow={setClickedOnFilters} /> : <></>}
       <Head>
-        <title>Videos | Fampay</title>
+        <title>Videos | FamPay</title>
       </Head>
       <Header />
       <div className="w-full flex justify-center items-center gap-6 py-4">
