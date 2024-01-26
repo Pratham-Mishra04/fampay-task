@@ -20,6 +20,7 @@ func FetchLatestVideos() {
 		Type("video").
 		MaxResults(50).
 		Order("date").
+		PublishedAfter(time.Now().AddDate(0, 0, -7).Format(time.RFC3339)).
 		Do()
 
 	if err != nil {
