@@ -12,6 +12,7 @@ import (
 	"github.com/Pratham-Mishra04/fampay/fampay-backend/models"
 	"github.com/Pratham-Mishra04/fampay/fampay-backend/utils"
 	"github.com/gofiber/fiber/v2"
+	"gorm.io/gorm"
 )
 
 func FetchLatestVideos() {
@@ -26,8 +27,13 @@ func FetchLatestVideos() {
 	if err != nil {
 		go config.Logger.Errorw("Error while fetching from the service", "Message", err.Error(), "Path", "FetchLatestVideos", "Error", err)
 
+		if strings.Contains(err.Error(), "quotaExceeded") {
+			helpers.UpdateService()
+		}
 		return
 	}
+
+	additions := 0
 
 	tx := initializers.DB.Begin()
 
@@ -37,11 +43,6 @@ func FetchLatestVideos() {
 			go config.Logger.Errorw("Transaction rolled back due to error", "Message", tx.Error.Error(), "Path", "FetchLatestVideos", "Error", tx.Error)
 		}
 	}()
-
-	result := tx.Exec("DELETE FROM videos").Unscoped()
-	if result.Error != nil {
-		go config.Logger.Errorw("Error while flushing videos", "Message", result.Error.Error(), "Path", "FetchLatestVideos", "Error", result.Error)
-	}
 
 	for _, item := range searchResponse.Items {
 		video := models.Video{
@@ -60,15 +61,22 @@ func FetchLatestVideos() {
 			video.UploadedAt = parsedTime
 		}
 
-		result := tx.Create(&video)
-		if result.Error != nil {
-			go config.Logger.Errorw("Error while adding a video", "Message", result.Error.Error(), "Path", "FetchLatestVideos", "Error", result.Error)
+		var existingVideo models.Video
+		if err := tx.Where("title=? AND channel_id=?", video.Title, video.ChannelID).First(&existingVideo).Error; err != nil {
+			if err == gorm.ErrRecordNotFound {
+				result := tx.Create(&video)
+				if result.Error != nil {
+					go config.Logger.Errorw("Error while adding a video", "Message", result.Error.Error(), "Path", "FetchLatestVideos", "Error", result.Error)
+				} else {
+					additions++
+				}
+			}
 		}
 	}
 
 	if err := tx.Commit().Error; err != nil {
 		go config.Logger.Errorw("Error while committing a transaction", "Message", err.Error(), "Path", "FetchLatestVideos", "Error", err.Error)
-	} else {
+	} else if additions > 0 {
 		go helpers.FlushCache()
 	}
 }

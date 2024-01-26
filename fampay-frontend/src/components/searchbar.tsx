@@ -18,7 +18,7 @@ const SearchBar = ({ search, setSearch }: Props) => {
     el.preventDefault();
     if (search === '') router.push('/');
     else {
-      router.push(`/?message=${search}`);
+      router.push(`/?title=${search}`);
     }
   };
 

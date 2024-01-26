@@ -3,10 +3,8 @@ package helpers
 import (
 	"context"
 	"log"
-	"time"
 
 	"github.com/Pratham-Mishra04/fampay/fampay-backend/initializers"
-	"google.golang.org/api/googleapi"
 	"google.golang.org/api/option"
 	"google.golang.org/api/youtube/v3"
 )
@@ -19,50 +17,37 @@ var (
 var Service *youtube.Service
 
 func InitializeService() {
-	if len(apiKeys) == 0 {
-		apiKeys = initializers.CONFIG.YOUTUBE_API_KEYS
-		currentIndex = 0
-	}
+	apiKeys = initializers.CONFIG.YOUTUBE_API_KEYS
+	currentIndex = 0
 
-	err := retry(len(apiKeys), 2*time.Second, func() error {
-		apiKey := apiKeys[currentIndex]
-
-		youtubeService, err := youtube.NewService(context.Background(), option.WithAPIKey(apiKey))
-		if err != nil {
-			if apiErr, ok := err.(*googleapi.Error); ok {
-				// Check if the error is due to an expired or invalid API key
-				if apiErr.Code == 403 && apiErr.Errors[0].Reason == "accessNotConfigured" {
-					rotateAPIKey()
-				}
-			}
-			return err
-		}
-
-		Service = youtubeService
-
-		log.Println("Connected to the service!")
-		return nil
-	})
-
+	youtubeService, err := youtube.NewService(context.Background(), option.WithAPIKey(apiKeys[0]))
 	if err != nil {
 		log.Fatal("Error occurred while connecting to the service. ", err)
 	}
+
+	Service = youtubeService
+	log.Println("Connected to the service!")
 }
 
 func rotateAPIKey() {
+	if currentIndex == len(apiKeys)-1 {
+		log.Fatal("All KEYS have been exhausted!")
+	}
+
 	currentIndex = (currentIndex + 1) % len(apiKeys)
 	log.Printf("\nSwitched to API key %d.", currentIndex+1)
+	log.Println(len(apiKeys))
 }
 
-func retry(maxAttempts int, delay time.Duration, fn func() error) error {
-	var err error
-	for attempt := 1; attempt <= maxAttempts; attempt++ {
-		err = fn()
-		if err == nil {
-			break
-		}
-		log.Printf("\nError connecting to the service, retrying attempt %d: %v", attempt, err)
-		time.Sleep(delay)
+func UpdateService() {
+	rotateAPIKey()
+
+	apiKey := apiKeys[currentIndex]
+
+	youtubeService, err := youtube.NewService(context.Background(), option.WithAPIKey(apiKey))
+	if err != nil {
+		log.Fatal("Error occurred while connecting to the service. ", err)
 	}
-	return err
+
+	Service = youtubeService
 }
