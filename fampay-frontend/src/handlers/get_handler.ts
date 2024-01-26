@@ -1,5 +1,4 @@
-import axios from 'axios'
-import { GenericAbortSignal } from 'axios';
+import axios, { GenericAbortSignal } from 'axios';
 
 const getHandler = async (URL: string, signal?: GenericAbortSignal) => {
   const headers = {
@@ -11,9 +10,8 @@ const getHandler = async (URL: string, signal?: GenericAbortSignal) => {
     data: '',
     statusCode: 500,
   };
-  await axios.create({
-    baseURL: process.env.NEXT_PUBLIC_BACKEND_URL,
-  }).get(URL, { headers, signal })
+  await axios
+    .get(URL, { headers, signal })
     .then(res => {
       response.status = 1;
       response.data = res.data;
