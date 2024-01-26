@@ -2,7 +2,10 @@ module github.com/Pratham-Mishra04/fampay/fampay-backend
 
 go 1.21.1
 
-require github.com/gofiber/fiber/v2 v2.52.0
+require (
+	github.com/gofiber/fiber/v2 v2.52.0
+	gorm.io/gorm v1.25.5
+)
 
 require (
 	cloud.google.com/go/compute v1.23.3 // indirect
@@ -39,7 +42,6 @@ require (
 	go.opentelemetry.io/otel v1.21.0 // indirect
 	go.opentelemetry.io/otel/metric v1.21.0 // indirect
 	go.opentelemetry.io/otel/trace v1.21.0 // indirect
-	go.uber.org/atomic v1.9.0 // indirect
 	go.uber.org/multierr v1.10.0 // indirect
 	golang.org/x/crypto v0.18.0 // indirect
 	golang.org/x/exp v0.0.0-20230905200255-921286631fa9 // indirect
@@ -52,7 +54,6 @@ require (
 	google.golang.org/protobuf v1.32.0 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
-	gorm.io/gorm v1.25.5 // indirect
 )
 
 require (

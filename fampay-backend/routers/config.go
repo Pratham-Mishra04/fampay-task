@@ -5,6 +5,5 @@ import (
 )
 
 func Config(app *fiber.App) {
-	AuthRouter(app)
 	VideoRouter(app)
 }

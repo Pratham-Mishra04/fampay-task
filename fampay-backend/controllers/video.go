@@ -1,8 +1,6 @@
 package controllers
 
 import (
-	"net/http"
-
 	"github.com/Pratham-Mishra04/fampay/fampay-backend/helpers"
 	"github.com/gofiber/fiber/v2"
 )
@@ -12,7 +10,6 @@ const (
 )
 
 func FetchLatestVideos(c *fiber.Ctx) error {
-	// Make API requests using youtubeService...
 	// For example, retrieve the user's channel information
 	searchResponse, err := helpers.Service.Search.List([]string{"snippet"}).
 		Q(QUERY).
@@ -21,7 +18,9 @@ func FetchLatestVideos(c *fiber.Ctx) error {
 		Order("date").  // Order by date to get the latest videos
 		Do()
 	if err != nil {
-		return c.SendStatus(http.StatusInternalServerError)
+		return c.JSON(fiber.Map{
+			"error": err,
+		})
 	}
 
 	// Display the retrieved data on the dashboard
