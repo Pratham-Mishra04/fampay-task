@@ -7,18 +7,15 @@ import (
 	"github.com/Pratham-Mishra04/fampay/fampay-backend/helpers"
 	"github.com/Pratham-Mishra04/fampay/fampay-backend/initializers"
 	"github.com/Pratham-Mishra04/fampay/fampay-backend/models"
+	"github.com/Pratham-Mishra04/fampay/fampay-backend/utils"
 	"github.com/gofiber/fiber/v2"
-)
-
-const (
-	time_layout = "2006-01-02T15:04:05Z"
 )
 
 func FetchLatestVideos() {
 	searchResponse, err := helpers.Service.Search.List([]string{"snippet"}).
 		Q(config.ServiceQuery).
 		Type("video").
-		MaxResults(10).
+		MaxResults(50).
 		Order("date").
 		Do()
 
@@ -52,7 +49,7 @@ func FetchLatestVideos() {
 		}
 
 		// Parse the time string
-		parsedTime, err := time.Parse(time_layout, item.Snippet.PublishedAt)
+		parsedTime, err := time.Parse(time.RFC3339, item.Snippet.PublishedAt)
 		if err != nil {
 			video.UploadedAt = time.Now()
 		} else {
@@ -71,8 +68,11 @@ func FetchLatestVideos() {
 }
 
 func GetVideos(c *fiber.Ctx) error {
+	paginatedDB := utils.Paginator(c)(initializers.DB)
+	searchedDB := utils.Search(c)(paginatedDB)
+
 	var videos []models.Video
-	if err := initializers.DB.
+	if err := searchedDB.
 		Order("uploaded_at DESC").
 		Find(&videos).Error; err != nil {
 		go config.Logger.Errorw("Error while fetching videos", "Message", err.Error(), "Path", "FetchLatestVideos", "Error", err.Error)
