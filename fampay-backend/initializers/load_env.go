@@ -66,12 +66,10 @@ func LoadEnv() {
 	CONFIG.YOUTUBE_API_KEYS, err = loadAPIKeysFromFile(CONFIG.YOUTUBE_API_KEYS_LOCATION)
 
 	if err != nil {
-		err := fmt.Errorf("environment variable %s not found: %e", "YOUTUBE_API_KEYS", err)
+		err := fmt.Errorf("environment variable %s not found: %s", "YOUTUBE_API_KEYS", err.Error())
 		log.Fatal(err)
-	}
-
-	if len(CONFIG.YOUTUBE_API_KEYS) == 0 {
-		err := fmt.Errorf("file %s is empty", CONFIG.YOUTUBE_API_KEYS_LOCATION)
+	} else if len(CONFIG.YOUTUBE_API_KEYS) == 0 {
+		err := fmt.Errorf("environment variable %s not found: file %s is empty", "YOUTUBE_API_KEYS", CONFIG.YOUTUBE_API_KEYS_LOCATION)
 		log.Fatal(err)
 	}
 }
@@ -108,7 +106,7 @@ func checkMissingKeys(requiredKeys []string, config Config) []string {
 func loadAPIKeysFromFile(filename string) (pq.StringArray, error) {
 	file, err := os.Open(filename)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("file %s not found", filename)
 	}
 	defer file.Close()
 

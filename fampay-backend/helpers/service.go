@@ -24,7 +24,7 @@ func InitializeService() {
 		currentIndex = 0
 	}
 
-	err := retry(5, 2*time.Second, func() error {
+	err := retry(len(apiKeys), 2*time.Second, func() error {
 		apiKey := apiKeys[currentIndex]
 
 		youtubeService, err := youtube.NewService(context.Background(), option.WithAPIKey(apiKey))
