@@ -11,7 +11,7 @@ interface Props {
 const VideoCard = ({ video }: Props) => {
   return (
     <Link
-      href={`https://youtube.com/${video.youtubeID}`}
+      href={`https://youtube.com/watch?v=${video.youtubeID}`}
       target="_blank"
       className="w-72 h-48 max-lg:w-60 max-lg:h-60 max-md:w-72 max-md:h-72 rounded-lg relative group transition-ease-out-500"
     >

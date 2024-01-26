@@ -111,11 +111,11 @@ To run the FamPay Videos Frontend, follow these steps:
 
 ![Sign Up](screenshots/homepage.png)
 
-*Filter Box*
+*Filter By Channel Title*
 
 ![Sign Up](screenshots/filters_box.png)
 
-*Filter Example*
+*Filter By Video Title*
 
 ![Sign Up](screenshots/filters_page.png)
 
@@ -126,7 +126,7 @@ To run the FamPay Videos Frontend, follow these steps:
 
 # API (Backend)
 
-## Log Model
+## Video Model
 
 The `Video` model is structured as follows:
 
@@ -188,11 +188,13 @@ A sample of the keys file is provided in the root directory of the backend, name
 
 Provide all the available keys in a txt file and ensure that the location (name, if in root folder) of this file matches with the environment variable `YOUTUBE_API_KEYS_LOCATION`.
 
-#### Rotation of API Keys
+### Rotation of API Keys
 
 When multiple files are available in `keys.txt` file, and one key is exhausted, the server will switch to the next key automatically, displaying a message `Switched to API key 2`, and so on. 
 
-When all the keys are exhausted, an error is thrown `All KEYS have been exhausted!` *(this can be disabled at fampay-backend/helpers/service.go)*
+When all the keys are exhausted, an error is thrown `All KEYS have been exhausted!` *( this can be disabled at fampay-backend/helpers/service.go )*
+
+*Code of Key Rotation is present at `fampay-backend/helpers/service.go`*
 
 `! DON'T FORGET TO GET KEYS AND ENABLE YOUR YOUTUBE API`
 
@@ -209,19 +211,24 @@ To run the FamPay Videos Backend, follow these steps:
     sudo nano .env
    ```
 
-4. Run the following command:
+4. Create a txt file and add all the available API Keys, checkout *keys.txt.sample* for reference.
+    ```bash
+    sudo nano keys.txt
+   ```
+
+5. Run the following command:
 
     ```bash
     sudo docker compose up --build
     ```
 
-5. The application will be accessible at `http://localhost:8000` by default.
+6. The application will be accessible at `http://localhost:8000` by default.
 
-6. All the logs from the application can be viewed in `fampay-backend/logs` directory.
+7. All the logs from the application can be viewed in `fampay-backend/logs` directory.
    
-7. Default topic of search has been set to ***football***, it can be changed at `fampay-backend/config/service.go - ServiceQuery`
+8. Default topic of search has been set to ***football***, it can be changed at `fampay-backend/config/service.go - ServiceQuery`
    
-8. Data is been fetched from the Youtube API every ***10 seconds*** by default, it can be changed at `fampay-backend/config/service.go - RepeaterDelay`
+9. Data is been fetched from the Youtube API every ***10 seconds*** by default, it can be changed at `fampay-backend/config/service.go - RepeaterDelay`
 
 
 ## Efficiency
